@@ -1,6 +1,8 @@
 "use client"
 
 import { useRouter } from "next/navigation"
+import { useAuth } from "@/app/lib/authContext"
+import { useEffect } from "react"
 
 interface Card {
   id: string
@@ -43,11 +45,22 @@ const cards: Card[] = [
 
 export default function Home() {
   const router = useRouter()
+  const { isAuthenticated, username, logout } = useAuth()
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      router.push("/auth/login")
+    }
+  }, [isAuthenticated, router])
 
   const handleCardClick = (route?: string) => {
     if (route) {
       router.push(route)
     }
+  }
+
+  if (!isAuthenticated) {
+    return null
   }
 
   return (
@@ -60,13 +73,23 @@ export default function Home() {
         <nav className="hidden md:block space-y-4 text-sm text-zinc-400">
           <p className="text-yellow-500 font-semibold">Menu</p>
         </nav>
+        <div className="mt-8 pt-8 border-t border-zinc-700">
+          <p className="text-sm text-zinc-400 mb-3">Logged in as:</p>
+          <p className="font-bold text-yellow-400 mb-4">{username}</p>
+          <button
+            onClick={logout}
+            className="w-full px-4 py-2 bg-red-600 hover:bg-red-500 text-white rounded-lg transition text-sm font-medium"
+          >
+            Logout
+          </button>
+        </div>
       </aside>
 
       {/* MAIN CONTENT */}
       <main className="flex-1 p-6 md:p-10">
         <div className="max-w-6xl">
           <h2 className="text-4xl md:text-3xl font-bold text-yellow-400 mb-2">
-            Welcome Back
+            Welcome Back, {username}
           </h2>
           <p className="text-zinc-400 mb-10">
             Manage all your tasks in one place
