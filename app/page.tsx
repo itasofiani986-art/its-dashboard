@@ -45,22 +45,30 @@ const cards: Card[] = [
 
 export default function Home() {
   const router = useRouter()
-  const { isAuthenticated, username, logout } = useAuth()
+  const { isAuthenticated, username, logout, isLoading } = useAuth()
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (!isLoading && !isAuthenticated) {
       router.push("/auth/login")
     }
-  }, [isAuthenticated, router])
+  }, [isAuthenticated, isLoading, router])
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen bg-black items-center justify-center text-white">
+        <p>Loading...</p>
+      </div>
+    )
+  }
+
+  if (!isAuthenticated) {
+    return null
+  }
 
   const handleCardClick = (route?: string) => {
     if (route) {
       router.push(route)
     }
-  }
-
-  if (!isAuthenticated) {
-    return null
   }
 
   return (

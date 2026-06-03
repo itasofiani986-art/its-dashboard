@@ -10,6 +10,7 @@ interface AuthContextType {
   logout: () => void
   requiresTwoFA: boolean
   setRequiresTwoFA: (value: boolean) => void
+  isLoading: boolean
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -18,22 +19,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [username, setUsername] = useState<string | null>(null)
   const [requiresTwoFA, setRequiresTwoFA] = useState(false)
-  const [isLoaded, setIsLoaded] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
+    // Check if user is already logged in
     const savedUsername = Cookies.get('its_user')
-    const twoFARequired = Cookies.get('its_2fa_required')
     
     if (savedUsername) {
       setUsername(savedUsername)
       setIsAuthenticated(true)
     }
     
-    if (twoFARequired === 'true') {
-      setRequiresTwoFA(true)
-    }
-    
-    setIsLoaded(true)
+    setIsLoading(false)
   }, [])
 
   const login = (user: string) => {
@@ -50,8 +47,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     Cookies.remove('its_2fa_required')
   }
 
-  if (!isLoaded) return null
-
   return (
     <AuthContext.Provider
       value={{
@@ -61,6 +56,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         logout,
         requiresTwoFA,
         setRequiresTwoFA,
+        isLoading,
       }}
     >
       {children}
