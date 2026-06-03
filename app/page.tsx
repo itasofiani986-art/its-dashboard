@@ -46,27 +46,22 @@ const cards: Card[] = [
 export default function Home() {
   const router = useRouter()
   const { isAuthenticated, username, logout } = useAuth()
-  const [mounted, setMounted] = useState(false)
+  const [isClient, setIsClient] = useState(false)
 
+  // Check auth on mount
   useEffect(() => {
-    setMounted(true)
+    setIsClient(true)
   }, [])
 
   useEffect(() => {
-    if (mounted && !isAuthenticated) {
-      router.push("/auth/login")
+    if (isClient && !isAuthenticated) {
+      console.log('Not authenticated, redirecting to login')
+      router.replace('/auth/login')
     }
-  }, [mounted, isAuthenticated, router])
+  }, [isClient, isAuthenticated, router])
 
-  if (!mounted) {
-    return (
-      <div className="flex min-h-screen bg-black items-center justify-center text-white">
-        <p>Loading...</p>
-      </div>
-    )
-  }
-
-  if (!isAuthenticated) {
+  // Prevent rendering before auth check
+  if (!isClient || !isAuthenticated) {
     return null
   }
 
