@@ -1,5 +1,5 @@
 import speakeasy from 'speakeasy'
-import QRCode from 'qrcode'
+import QRCode from 'qrcode.react'
 
 export interface TOTPSetup {
   secret: string
