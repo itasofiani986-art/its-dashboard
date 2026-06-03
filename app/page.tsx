@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/app/lib/authContext"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 
 interface Card {
   id: string
@@ -45,15 +45,20 @@ const cards: Card[] = [
 
 export default function Home() {
   const router = useRouter()
-  const { isAuthenticated, username, logout, isLoading } = useAuth()
+  const { isAuthenticated, username, logout } = useAuth()
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
+    setMounted(true)
+  }, [])
+
+  useEffect(() => {
+    if (mounted && !isAuthenticated) {
       router.push("/auth/login")
     }
-  }, [isAuthenticated, isLoading, router])
+  }, [mounted, isAuthenticated, router])
 
-  if (isLoading) {
+  if (!mounted) {
     return (
       <div className="flex min-h-screen bg-black items-center justify-center text-white">
         <p>Loading...</p>
