@@ -8,7 +8,7 @@ import { generateTOTPSecret } from '@/app/lib/totp'
 
 export default function LoginPage() {
   const router = useRouter()
-  const { login, setRequiresTwoFA } = useAuth()
+  const { login } = useAuth()
   const [mode, setMode] = useState<'login' | 'register'>('login')
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')

@@ -19,10 +19,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     // Check if user is already logged in (sync from cookies)
     const savedUsername = Cookies.get('its_user')
+    console.log('AuthContext mounted, checking cookie. its_user =', savedUsername)
     
     if (savedUsername) {
       setUsername(savedUsername)
       setIsAuthenticated(true)
+      console.log('User loaded from cookie:', savedUsername)
     } else {
       setIsAuthenticated(false)
       setUsername(null)
@@ -30,12 +32,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const login = (user: string) => {
+    console.log('Attempting login for:', user)
     setUsername(user)
     setIsAuthenticated(true)
     Cookies.set('its_user', user, { expires: 7 })
+    console.log('Cookie set. Verification:', Cookies.get('its_user'))
   }
 
   const logout = () => {
+    console.log('Logging out')
     setUsername(null)
     setIsAuthenticated(false)
     Cookies.remove('its_user')
