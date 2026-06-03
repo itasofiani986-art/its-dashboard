@@ -38,7 +38,6 @@ export default function LoginPage() {
 
       if (user.twoFAEnabled && user.twoFASecret) {
         sessionStorage.setItem('temp_username', username)
-        setRequiresTwoFA(true)
         router.push('/auth/verify-2fa')
       } else {
         login(username)
